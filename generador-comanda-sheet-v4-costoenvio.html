@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Comandas</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            font-family: "Calibri", sans-serif; 
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff9e6;
+            color: #003b71;
+    }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        table {
+            width: 60%;
+            margin: auto;
+            margin-top: 20px;
+            border-collapse: collapse;
+            border: 1px solid #000;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: center;
+        }
+        
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #comanda {
+            width: 80mm;
+            font-size: 16px;
+            text-align: left;
+            margin: auto;
+            display: none;
+        }
+        .logo, .logo-comanda {
+            width: 100px;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .eliminar, .cambiar{
+            margin: 0;
+            padding: 0;
+            background: none;
+            border: 0;
+            color: inherit;
+        }
+        .eliminar{
+            color:#fd0234;
+        }
+        .total-a-pagar{
+            font-size: 16px;
+        }
+
+
+        .campo-estilizado, .desplegable {
+            height: 25px; /* Misma altura para ambos */
+            border-radius: 5px; /* Bordes redondeados */
+            border: 1px solid #ccc; /* Borde gris claro */
+            font-size: 14px; /* Tamaño del texto */
+            outline: none;
+            box-sizing: border-box; /* Asegura que el padding no aumente el tamaño */
+        }
+
+        .campo-estilizado {
+            width: 85px;
+            padding: 3px 5px; /* Ajuste fino del padding */
+            text-align: center;
+            transition: border 0.3s ease-in-out;
+        }
+        
+        .campo-name, .campo-tel {
+            width: 150px;
+            margin: auto;
+            margin-bottom: 10px;
+            padding: 3px 5px; /* Ajuste fino del padding */
+            text-align: center;
+            transition: border 0.3s ease-in-out;
+        }
+
+        .campo-estilizado:focus, .campo-tel:focus, .campo-name:focus {
+            border: 1px solid #fa7268;
+        }
+
+        .desplegable {
+            width: auito;
+            padding: 2px 5px; /* Ajuste fino para que el texto no se corte */
+            background-color: #fff;
+            cursor: pointer;
+            transition: border 0.3s ease-in-out;
+        }
+
+        .desplegable:hover {
+            border-color: #fa7268;
+        }
+
+        .desplegable:focus {
+            border-color: #c65a52;
+            box-shadow: 0 0 5px rgba(250, 114, 104, 0.5);
+        }
+
+        .boton {
+            padding: 5px 15px; /* Ajustado para que combine mejor */
+            height: 30px; /* Ligero ajuste para alinearse */
+            background-color: #fa7268;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .boton:hover {
+            background-color: #c65a52;
+        }
+
+        .boton:active {
+            background-color: #fa7268;
+        }
+
+        .campo-direccion, .campo-comentarios {
+            width: 40%; /* Para que ocupe casi todo el ancho del contenedor */
+            height: 30px; /* Misma altura que otros campos */
+            margin: auto;
+            margin-top: 10px;
+            padding: 5px 10px; /* Espaciado interno */
+            border: 1px solid #ccc; /* Borde gris claro */
+            border-radius: 5px; /* Bordes redondeados */
+            font-size: 14px; /* Tamaño de fuente */
+            outline: none;
+            box-sizing: border-box;
+            transition: border 0.3s ease-in-out;
+        }
+
+        .campo-direccion:focus {
+            border: 1px solid #fa7268; /* Color destacado al enfocar */
+            box-shadow: 0 0 5px rgba(250, 114, 104, 0.5); /* Sombra sutil */
+        }
+        .campo-comentarios{
+            height: 50px;
+        }
+
+        textarea.campo-comentarios {
+    width: 40%; /* Ajusta el ancho según sea necesario */
+    height: 60px; /* Altura suficiente para escribir comentarios */
+    margin: auto;
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border 0.3s ease-in-out;
+}
+
+textarea.campo-direccion:focus {
+    border: 1px solid #fa7268;
+    box-shadow: 0 0 5px rgba(250, 114, 104, 0.5);
+}
+
+
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #comanda, #comanda * {
+                visibility: visible;
+            }
+            #comanda {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                margin: 0;
+                padding: 2px;
+                font-size: 22px;
+                font-weight: bold;
+                color: #000;
+
+            }
+            @page {
+            margin: 2mm;
+            margin-left: 1px;
+        }
+        
+        header, footer {
+            display: none;
+        }
+        .logo-comanda {
+                width: 60px;
+                height: auto;
+                margin: 10px auto;
+            }
+        #imprimirButtonContainer {
+                display: none;
+            }
+            .total-a-pagar{
+            font-size: 24px;
+            font-weight: bold;
+        }
+            #comandaTotal {
+        font-size: 24px; /* Ajusta este valor según lo grande que quieras el total */
+        font-weight: bold; /* Opcional: para que el total sea más destacado */
+    }
+        }
+    </style>
+</head>
+<body>
+        <body>
+            <div class="container">
+                <!-- Logo de la empresa -->
+                <img src="https://pezglobocomanda.tiendawebuy.online/wp-content/uploads/2025/02/icono-del-sitio-pez-globo-300x300-1.png" alt="Logo de la Empresa" class="logo">
+        
+                <!-- Campos de nombre y teléfono -->
+                <div>
+                    <label for="nombreCliente">Nombre:</label>
+                    <input type="text" id="nombreCliente" class="campo-name" placeholder="Nombre del cliente">
+                </div>
+                <div>
+                    <label for="telefonoCliente">Teléfono:</label>
+                    <input type="text" id="telefonoCliente" class="campo-tel" placeholder="Teléfono del cliente">
+                </div>
+                <h2>Comentarios</h2>
+                <textarea id="comentarios" class="campo-comentarios" placeholder="Ej: Sin salmón, sin gluten, etc."></textarea>
+
+                
+                <h2>Seleccionar Productos</h2>
+                <select class="desplegable" id="productoSeleccionado"></select>
+                <input type="number" id="cantidad" class="campo-estilizado" placeholder="Cantidad" value="1" min="1">
+                <button onclick="agregarProducto()" class="boton">Agregar</button>
+        
+            </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="listaProductos"></tbody>
+        </table>
+
+        <h3>Total: $<span class="total-a-pagar" id="total">0</span></h3>
+
+        <h2>Opciones de Pago</h2>
+        <select class="desplegable" id="metodoPago">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Transferencia">Transferencia</option>
+        </select>
+
+        <h2>Entrega</h2>
+        <select class="desplegable" id="tipoEntrega" onchange="toggleDireccion()">
+            <option value="Retiro en el Local">Retiro en el Local</option>
+            <option value="Envio a domicilio">Envío a domicilio</option>
+        </select>
+        <input type="text" class="campo-direccion" id="direccion" placeholder="Dirección de envío" style="display:none;">
+        
+                <!-- Sección de costo de envío -->
+        <div id="seccionCostoEnvio" style="display: none;">
+            <h2>Costo de Envío </h2>
+            <select class="desplegable" id="costoEnvio" onchange="actualizarTotal()">
+                <option value="0">Seleccione un costo de envío</option>
+            </select>
+        </div>  
+
+        <h2>Descuento</h2>
+        <select class="desplegable" id="descuento">
+            <option value="0">Sin descuento</option>
+            <option value="10">10%</option>
+            <option value="15">15%</option>
+            <option value="25">25%</option>
+            <option value="100">100%</option>
+        </select>
+
+        <button onclick="generarComanda()" class="boton">Generar Comanda</button>
+    </div>
+
+    <div id="comanda">
+        <!-- Logo de la empresa en la comanda -->
+        <img src="https://pezglobocomanda.tiendawebuy.online/wp-content/uploads/2025/02/icono-del-sitio-pez-globo-60x60-1.png" alt="Logo de la Empresa" class="logo-comanda">
+    
+        <h2>Comanda</h2>
+        <!-- Mostrar nombre y teléfono -->
+        <p><strong>Nombre:</strong> <span id="comandaNombre"></span></p>
+        <p><strong>Teléfono:</strong> <span id="comandaTelefono"></span></p>
+        <p id="comandaComentarios" style="display:none;"><strong>Comentarios:</strong> <span id="comandaComentariosTexto">Sin contraindicaciones</span></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                    <th>Descuento</th>
+                </tr>
+            </thead>
+            <tbody id="detalleComanda"></tbody>
+        </table>
+        <h3>Total: $<span id="comandaTotal">0</span></h3>
+
+        <p><strong>Método de Pago:</strong> <span id="comandaPago"></span></p>
+        <p><strong>Entrega:</strong> <span id="comandaEntrega"></span></p>
+        <p id="comandaDireccion" style="display:none;"><strong>Dirección:</strong> <span id="comandaDireccionTexto"></span></p>
+        <div id="imprimirButtonContainer">
+            <button id="imprimirButton" class="boton" onclick="imprimirComanda()">Imprimir</button>
+        </div>
+    </div>
+
+    <script>
+        let productos = [];
+        async function cargarProductos() {
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL_3nMCPttSEaMYxs4DG9ew-HbBEw66LsD10Akk7biavBh4eP7Yshh7RrzsIqOX1NNxWLqBkLnmorp/pub?output=csv";
+    
+    try {
+        const response = await fetch(url);
+        const csvText = await response.text();
+        console.log("CSV Cargado:\n", csvText); // Verificar el contenido del CSV
+        const productos = csvToJson(csvText);
+        console.log("Productos Convertidos:", productos); // Verificar los productos en JSON
+        actualizarSelectorProductos(productos);
+    } catch (error) {
+        console.error("Error al cargar productos:", error);
+    }
+}
+
+let costosEnvio = [];
+
+async function cargarCostosEnvio() {
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL_3nMCPttSEaMYxs4DG9ew-HbBEw66LsD10Akk7biavBh4eP7Yshh7RrzsIqOX1NNxWLqBkLnmorp/pub?gid=1174806520&single=true&output=csv"; // Cambia el gid al de tu hoja CostosEnvio
+
+    try {
+        const response = await fetch(url);
+        const csvText = await response.text();
+        const rows = csvText.split("\n").map(row => row.split(","));
+        const headers = rows.shift().map(header => header.trim());
+
+        costosEnvio = rows.map(row => {
+            let obj = {};
+            headers.forEach((header, index) => {
+                obj[header] = row[index] ? row[index].trim() : "";
+            });
+            return obj;
+        }).filter(obj => obj.nombre && obj.nombre !== "");
+
+        actualizarSelectorCostosEnvio();
+    } catch (error) {
+        console.error("Error al cargar costos de envío:", error);
+    }
+}
+
+function actualizarSelectorCostosEnvio() {
+    let select = document.getElementById("costoEnvio");
+    select.innerHTML = "<option value='0'>Seleccione un costo de envío</option>";
+
+    costosEnvio.forEach(costo => {
+        let option = document.createElement("option");
+        option.value = costo.precio;
+        option.text = `${costo.nombre} - $${costo.precio}`;
+        select.appendChild(option);
+    });
+}
+
+function csvToJson(csv) {
+    const rows = csv.split("\n").map(row => row.split(","));
+    const headers = rows.shift().map(header => header.trim());
+
+    return rows.map(row => {
+        let obj = {};
+        headers.forEach((header, index) => {
+            obj[header] = row[index] ? row[index].trim() : "";
+        });
+        return obj;
+    }).filter(obj => obj.nombre && obj.nombre !== "");
+}
+
+
+function actualizarSelectorProductos(productosDisponibles) {
+    let select = document.getElementById("productoSeleccionado");
+    select.innerHTML = "";
+
+    // Crear un objeto donde agruparemos los productos por categoría
+    let categorias = {};
+
+    productosDisponibles.forEach(p => {
+        let categoria = p.categoria || "Otros"; // Si no tiene categoría, se asigna "Otros"
+        let precioNumerico = parseFloat(p.precio.replace(",", "."));
+
+        if (!categorias[categoria]) {
+            categorias[categoria] = []; // Inicializa la categoría si no existe
+        }
+        categorias[categoria].push({ nombre: p.nombre, precio: Math.floor(precioNumerico) });
+    });
+
+    // Crear los grupos de opciones dentro del select
+    Object.keys(categorias).forEach(categoria => {
+        let optgroup = document.createElement("optgroup");
+        optgroup.label = categoria;
+
+        categorias[categoria].forEach(p => {
+            let option = document.createElement("option");
+            option.value = p.nombre;
+            option.text = `${p.nombre} - $${p.precio}`;
+            optgroup.appendChild(option);
+        });
+
+        select.appendChild(optgroup);
+    });
+}
+
+
+        
+
+function agregarProducto() {
+    let select = document.getElementById("productoSeleccionado");
+    let cantidad = parseInt(document.getElementById("cantidad").value);
+    let nombre = select.value;
+
+    let precioTexto = select.options[select.selectedIndex].text.split('$')[1];
+    let precio = Math.floor(parseFloat(precioTexto.replace(',', '.'))); // Redondear hacia abajo
+
+    if (nombre && cantidad > 0 && !isNaN(precio)) {
+        // Buscar si el producto ya está en la lista
+        let productoExistente = productos.find(p => p.nombre === nombre);
+
+        if (productoExistente) {
+            // Si el producto ya existe, sumarle la cantidad
+            productoExistente.cantidad += cantidad;
+        } else {
+            // Si el producto no existe, agregarlo a la lista
+            productos.push({ nombre, precio, cantidad });
+        }
+
+        mostrarProductos();
+    } else {
+        alert("Por favor, selecciona un producto válido y una cantidad mayor que cero.");
+    }
+}
+
+
+function mostrarProductos() {
+    let lista = document.getElementById("listaProductos");
+    lista.innerHTML = productos.map((p, index) => {
+        let subtotal = p.precio * p.cantidad;
+        return `
+            <tr>
+                <td>${p.nombre}</td>
+                <td>$${Math.floor(p.precio)}</td> <!-- Redondear hacia abajo -->
+                <td>${p.cantidad}</td>
+                <td>$${Math.floor(subtotal)}</td> <!-- Redondear hacia abajo -->
+                <td>
+                    <button onclick="eliminarProducto(${index})" class="eliminar">
+                        <span class="material-icons">delete</span>
+                    </button>
+                    <button onclick="cambiarCantidad(${index}, -1)" class="cambiar">
+                        <span class="material-icons">remove</span>
+                    </button>
+                    <button onclick="cambiarCantidad(${index}, 1)" class="cambiar">
+                        <span class="material-icons">add</span>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join("");
+
+    actualizarTotal();
+}
+
+
+function cambiarCantidad(index, cambio) {
+    if (productos[index].cantidad + cambio > 0) {
+        productos[index].cantidad += cambio;
+    } else {
+        productos.splice(index, 1); // Elimina el producto si la cantidad es 0
+    }
+    mostrarProductos();
+}
+
+// Nueva función para eliminar productos
+function eliminarProducto(index) {
+    productos.splice(index, 1);
+    mostrarProductos();
+}
+
+
+function actualizarTotal() {
+    let totalProductos = productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+    let descuento = parseFloat(document.getElementById("descuento").value);
+    let totalDescuento = totalProductos * (descuento / 100);
+    let totalConDescuento = totalProductos - totalDescuento;
+
+    let costoEnvio = parseFloat(document.getElementById("costoEnvio").value) || 0;
+    let totalFinal = totalConDescuento + costoEnvio;
+
+    document.getElementById("total").innerText = Math.floor(totalFinal);
+}
+
+        function generarComanda() {
+    let comanda = document.getElementById("comanda");
+    let detalle = document.getElementById("detalleComanda");
+    detalle.innerHTML = "";
+
+    let totalProductos = productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+    let descuento = parseFloat(document.getElementById("descuento").value);
+    let totalDescuento = totalProductos * (descuento / 100);
+    let totalConDescuento = totalProductos - totalDescuento;
+
+    let costoEnvio = parseFloat(document.getElementById("costoEnvio").value) || 0;
+    let totalFinal = totalConDescuento + costoEnvio;
+
+    productos.forEach(p => {
+        let subtotal = p.precio * p.cantidad;
+        let descuentoProducto = subtotal * (descuento / 100);
+
+        detalle.innerHTML += `
+            <tr>
+                <td>${p.nombre}</td>
+                <td>${p.cantidad}</td>
+                <td>$${Math.floor(subtotal)}</td>
+                <td class="descuento">-$${Math.floor(descuentoProducto)} (${descuento}%)</td>
+            </tr>
+        `;
+    });
+
+    if (costoEnvio > 0) {
+        detalle.innerHTML += `
+            <tr>
+                <td colspan="3">Costo de Envío</td>
+                <td>$${Math.floor(costoEnvio)}</td>
+            </tr>
+        `;
+    }
+
+    document.getElementById("comandaTotal").innerText = `${Math.floor(totalFinal)}`;
+
+    // Mostrar nombre y teléfono en la comanda
+    let nombreCliente = document.getElementById("nombreCliente").value;
+    let telefonoCliente = document.getElementById("telefonoCliente").value;
+    document.getElementById("comandaNombre").innerText = nombreCliente ? nombreCliente : "No especificado";
+    document.getElementById("comandaTelefono").innerText = telefonoCliente ? telefonoCliente : "No especificado";
+
+    document.getElementById("comandaPago").innerText = document.getElementById("metodoPago").value;
+    document.getElementById("comandaEntrega").innerText = document.getElementById("tipoEntrega").value;
+
+    // Mostrar comentarios en la comanda
+    let comentarios = document.getElementById("comentarios").value;
+    let comandaComentarios = document.getElementById("comandaComentarios");
+    let comandaComentariosTexto = document.getElementById("comandaComentariosTexto");
+
+    if (comentarios.trim() !== "") {
+        comandaComentariosTexto.innerText = comentarios;
+    } else {
+        comandaComentariosTexto.innerText = "Sin contraindicaciones";
+    }
+    comandaComentarios.style.display = "block";
+
+    let direccion = document.getElementById("direccion").value;
+    let comandaDireccion = document.getElementById("comandaDireccion");
+    let comandaDireccionTexto = document.getElementById("comandaDireccionTexto");
+
+    if (document.getElementById("tipoEntrega").value === "Envio a domicilio") {
+        comandaDireccion.style.display = "block";
+        comandaDireccionTexto.innerText = direccion ? direccion : "No especificada";
+    } else {
+        comandaDireccion.style.display = "none";
+    }
+
+    comanda.style.display = "block";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    cargarProductos();
+    cargarCostosEnvio();
+});
+
+
+        function imprimirComanda() {
+            window.print();
+        }
+
+        function toggleDireccion() {
+        let tipoEntrega = document.getElementById("tipoEntrega").value;
+        let direccion = document.getElementById("direccion");
+        let seccionCostoEnvio = document.getElementById("seccionCostoEnvio");
+
+        if (tipoEntrega === "Envio a domicilio") {
+            direccion.style.display = "block"; // Muestra el campo de dirección
+            seccionCostoEnvio.style.display = "block"; // Muestra toda la sección de costo de envío
+        } else {
+            direccion.style.display = "none"; // Oculta el campo de dirección
+            seccionCostoEnvio.style.display = "none"; // Oculta toda la sección de costo de envío
+        }
+        }   
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarProductos();
+        });
+    </script>
+</body>
+</html>
