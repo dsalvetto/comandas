@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
     <title>Generador de Comandas</title>
     <link
       rel="stylesheet"
@@ -31,6 +33,7 @@
         max-width: 1100px;
         margin: 0 auto;
         padding: 30px 30px 20px 30px;
+        position: relative;
         background-color: white;
         border-radius: 10px;
         box-shadow: var(--sombra);
@@ -473,10 +476,34 @@
       .boton-cancelar:hover {
         background: #f5f5f5;
       }
+      /* Botón dentro del contenedor para gestionar la hoja de productos */
+      .container .manage-link {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: var(--color-primario);
+        color: var(--color-fondo);
+        padding: 8px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        z-index: 100;
+       
+      }
+      
+      @media (max-width: 480px) {
+        .container .manage-link {
+          top: 8px;
+          right: 8px;
+          padding: 7px 10px;
+          font-size: 14px;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="container">
+      <a href="https://docs.google.com/spreadsheets/d/10x5aj9juR9owCjf7RiOJI0Yr-6zXn77mBpHvHfXs5PA/edit?usp=sharing" target="_blank" rel="noopener" class="manage-link no-print" title="Abrir hoja de productos">Gestionar productos</a>
       <div class="header">
         <img
           src="https://pocitos.pezglobo.com.uy/wp-content/uploads/2024/07/icono-del-sitio-pez-globo-300x300.png"
