@@ -1,616 +1,1105 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Generador de Comandas</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
     <style>
-        body {
-            font-family: "Calibri", sans-serif; 
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-            background-color: #fff9e6;
-            color: #003b71;
-    }
-        .container {
-            max-width: 600px;
-            margin: auto;
+      :root {
+        --color-primario: #003b71;
+        --color-secundario: #fa7268;
+        --color-fondo: #fff9e6;
+        --color-texto: #333;
+        --color-borde: #ddd;
+        --sombra: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        font-family: "Calibri", "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: var(--color-fondo);
+        color: var(--color-texto);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 30px 30px 20px 30px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: var(--sombra);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .logo {
+        width: 120px;
+        height: auto;
+        margin-bottom: 15px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: var(--color-primario);
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 20px;
+        margin: 20px 0 15px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid var(--color-secundario);
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: var(--color-primario);
+      }
+
+      .input-group {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 15px;
+      }
+
+      .campo-estilizado,
+      .desplegable,
+      .campo-name,
+      .campo-tel,
+      .campo-direccion,
+      .campo-comentarios {
+        padding: 10px;
+        border: 1px solid var(--color-borde);
+        border-radius: 5px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      .campo-estilizado:focus,
+      .desplegable:focus,
+      .campo-name:focus,
+      .campo-tel:focus,
+      .campo-direccion:focus,
+      .campo-comentarios:focus {
+        border-color: var(--color-secundario);
+        box-shadow: 0 0 0 2px rgba(250, 114, 104, 0.2);
+        outline: none;
+      }
+
+      .campo-estilizado {
+        width: 80px;
+        text-align: center;
+      }
+
+      .campo-name,
+      .campo-tel {
+        width: 100%;
+        min-width: 200px;
+        max-width: 350px;
+        margin: 0;
+        display: block;
+      }
+
+      .desplegable {
+        min-width: 200px;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      .campo-direccion {
+        width: 100%;
+        max-width: 100%;
+        margin: 8px 0 0 0;
+        display: none;
+        transition: all 0.3s;
+        border: 1.5px solid var(--color-secundario);
+        background: #fff9f7;
+      }
+
+      .campo-direccion.visible {
+        display: block;
+        animation: fadeIn 0.3s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-8px);
         }
-        table {
-            width: 60%;
-            margin: auto;
-            margin-top: 20px;
-            border-collapse: collapse;
-            border: 1px solid #000;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        th, td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: center;
+      }
+
+      .campo-comentarios {
+        width: 100%;
+        max-width: 700px;
+        min-height: 80px;
+        margin: 0 auto;
+        display: block;
+      }
+
+      .boton {
+        padding: 10px 20px;
+        background-color: var(--color-secundario);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+
+      .boton:hover {
+        background-color: #e04a42;
+      }
+
+      .boton:active {
+        transform: scale(0.98);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 20px 0 0 0;
+        box-shadow: var(--sombra);
+        background: #fff;
+      }
+
+      th,
+      td {
+        padding: 14px 18px;
+        text-align: left;
+        border-bottom: 1px solid var(--color-borde);
+        font-size: 1.08em;
+      }
+
+      /* Ocultar encabezados de la tabla de productos */
+      thead {
+        display: none;
+      }
+
+      tr:hover {
+        background-color: rgba(0, 59, 113, 0.03);
+      }
+
+      .acciones {
+        display: flex;
+        gap: 5px;
+      }
+
+      .eliminar,
+      .cambiar {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50%;
+        transition: all 0.3s;
+      }
+
+      .eliminar {
+        color: #d32f2f;
+      }
+
+      .eliminar:hover {
+        background-color: rgba(211, 47, 47, 0.1);
+      }
+
+      .cambiar {
+        color: var(--color-primario);
+      }
+
+      .cambiar:hover {
+        background-color: rgba(0, 59, 113, 0.1);
+      }
+
+      .total-section {
+        text-align: center;
+        margin: 20px 0 0 0;
+        font-size: 20px;
+        font-weight: bold;
+        width: 100%;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      #comanda {
+        display: none;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: var(--sombra);
+      }
+
+      .logo-comanda {
+        width: 80px;
+        height: auto;
+        margin: 0 auto 15px;
+        display: block;
+      }
+
+      @media print {
+        body * {
+          visibility: hidden;
         }
-        
-        button {
-            margin-top: 10px;
-            padding: 10px;
-            cursor: pointer;
+
+        #comanda,
+        #comanda * {
+          visibility: visible;
         }
+
         #comanda {
-            width: 80mm;
-            font-size: 16px;
-            text-align: left;
-            margin: auto;
-            display: none;
-        }
-        .logo, .logo-comanda {
-            width: 100px;
-            height: auto;
-            display: block;
-            margin: 20px auto;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          border: none;
         }
 
-        .eliminar, .cambiar{
-            margin: 0;
-            padding: 0;
-            background: none;
-            border: 0;
-            color: inherit;
-        }
-        .eliminar{
-            color:#fd0234;
-        }
-        .total-a-pagar{
-            font-size: 16px;
+        .no-print {
+          display: none;
         }
 
+        @page {
+          margin: 10mm;
+        }
+      }
 
-        .campo-estilizado, .desplegable {
-            height: 25px; /* Misma altura para ambos */
-            border-radius: 5px; /* Bordes redondeados */
-            border: 1px solid #ccc; /* Borde gris claro */
-            font-size: 14px; /* Tamaño del texto */
-            outline: none;
-            box-sizing: border-box; /* Asegura que el padding no aumente el tamaño */
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          max-width: 98vw;
+          padding: 10px;
         }
 
-        .campo-estilizado {
-            width: 85px;
-            padding: 3px 5px; /* Ajuste fino del padding */
-            text-align: center;
-            transition: border 0.3s ease-in-out;
-        }
-        
-        .campo-name, .campo-tel {
-            width: 150px;
-            margin: auto;
-            margin-bottom: 10px;
-            padding: 3px 5px; /* Ajuste fino del padding */
-            text-align: center;
-            transition: border 0.3s ease-in-out;
+        .form-row {
+          flex-direction: column;
+          gap: 10px;
         }
 
-        .campo-estilizado:focus, .campo-tel:focus, .campo-name:focus {
-            border: 1px solid #fa7268;
+        .campo-comentarios {
+          max-width: 100%;
         }
 
-        .desplegable {
-            width: auito;
-            padding: 2px 5px; /* Ajuste fino para que el texto no se corte */
-            background-color: #fff;
-            cursor: pointer;
-            transition: border 0.3s ease-in-out;
+        .input-group {
+          flex-direction: column;
+          align-items: stretch;
         }
 
-        .desplegable:hover {
-            border-color: #fa7268;
-        }
-
-        .desplegable:focus {
-            border-color: #c65a52;
-            box-shadow: 0 0 5px rgba(250, 114, 104, 0.5);
-        }
-
+        .desplegable,
+        .campo-estilizado,
         .boton {
-            padding: 5px 15px; /* Ajustado para que combine mejor */
-            height: 30px; /* Ligero ajuste para alinearse */
-            background-color: #fa7268;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+          width: 100%;
         }
 
-        .boton:hover {
-            background-color: #c65a52;
+        table {
+          font-size: 14px;
         }
 
-        .boton:active {
-            background-color: #fa7268;
+        th,
+        td {
+          padding: 8px 10px;
         }
+      }
 
-        .campo-direccion, .campo-comentarios {
-            width: 40%; /* Para que ocupe casi todo el ancho del contenedor */
-            height: 30px; /* Misma altura que otros campos */
-            margin: auto;
-            margin-top: 10px;
-            padding: 5px 10px; /* Espaciado interno */
-            border: 1px solid #ccc; /* Borde gris claro */
-            border-radius: 5px; /* Bordes redondeados */
-            font-size: 14px; /* Tamaño de fuente */
-            outline: none;
-            box-sizing: border-box;
-            transition: border 0.3s ease-in-out;
+      .form-row {
+        display: flex;
+        gap: 40px;
+        justify-content: flex-start;
+        align-items: flex-end;
+        margin-bottom: 0;
+      }
+
+      .form-col {
+        flex: 1;
+        min-width: 250px;
+      }
+
+      /* Mejorar visualización de totales y descuentos */
+      .resumen-totales {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 1.08em;
+        width: 100%;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        padding: 0 10px;
+      }
+      .resumen-totales p {
+        margin: 0;
+        flex: 1 1 0;
+        text-align: center;
+        min-width: 0;
+        word-break: break-all;
+        font-variant-numeric: tabular-nums;
+        font-family: inherit;
+      }
+
+      /* Configuración de Pedido en dos columnas y más compacto */
+      .config-pedido-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 32px;
+        align-items: end;
+        margin-bottom: 20px;
+        max-width: 700px;
+      }
+      .config-pedido-grid .form-group {
+        margin-bottom: 0;
+        position: relative;
+      }
+      @media (max-width: 900px) {
+        .config-pedido-grid {
+          grid-template-columns: 1fr;
+          gap: 10px;
+          max-width: 100%;
         }
-
-        .campo-direccion:focus {
-            border: 1px solid #fa7268; /* Color destacado al enfocar */
-            box-shadow: 0 0 5px rgba(250, 114, 104, 0.5); /* Sombra sutil */
+      }
+      .config-pedido-main {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 18px 32px;
+        max-width: 700px;
+        margin-bottom: 0;
+      }
+      @media (max-width: 900px) {
+        .config-pedido-main {
+          grid-template-columns: 1fr;
+          gap: 10px;
+          max-width: 100%;
         }
-        .campo-comentarios{
-            height: 50px;
+      }
+      #seccionCostoEnvio,
+      #seccionDireccion {
+        margin-top: 10px;
+      }
+      #seccionDireccion {
+        margin-bottom: 18px;
+      }
+      #seccionDireccion .campo-direccion {
+        margin: 0;
+        display: block;
+      }
+      .boton.generar-comanda {
+        margin-top: 18px;
+      }
+
+      /* Modal de confirmación personalizado */
+      .modal-confirm-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s;
+      }
+      .modal-confirm-box {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+        padding: 32px 28px 22px 28px;
+        min-width: 320px;
+        max-width: 90vw;
+        text-align: center;
+        animation: scaleIn 0.2s;
+      }
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.92);
+          opacity: 0;
         }
-
-        textarea.campo-comentarios {
-    width: 40%; /* Ajusta el ancho según sea necesario */
-    height: 60px; /* Altura suficiente para escribir comentarios */
-    margin: auto;
-    margin-top: 10px;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    outline: none;
-    box-sizing: border-box;
-    transition: border 0.3s ease-in-out;
-}
-
-textarea.campo-direccion:focus {
-    border: 1px solid #fa7268;
-    box-shadow: 0 0 5px rgba(250, 114, 104, 0.5);
-}
-
-
-
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #comanda, #comanda * {
-                visibility: visible;
-            }
-            #comanda {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                margin: 0;
-                padding: 2px;
-                font-size: 22px;
-                font-weight: bold;
-                color: #000;
-
-            }
-            @page {
-            margin: 2mm;
-            margin-left: 1px;
+        to {
+          transform: scale(1);
+          opacity: 1;
         }
-        
-        header, footer {
-            display: none;
-        }
-        .logo-comanda {
-                width: 60px;
-                height: auto;
-                margin: 10px auto;
-            }
-        #imprimirButtonContainer {
-                display: none;
-            }
-            .total-a-pagar{
-            font-size: 24px;
-            font-weight: bold;
-        }
-            #comandaTotal {
-        font-size: 24px; /* Ajusta este valor según lo grande que quieras el total */
-        font-weight: bold; /* Opcional: para que el total sea más destacado */
-    }
-        }
+      }
+      .modal-confirm-actions {
+        margin-top: 18px;
+        display: flex;
+        gap: 18px;
+        justify-content: center;
+      }
+      .boton-cancelar {
+        background: #eee;
+        color: #333;
+        border: 1px solid #ccc;
+      }
+      .boton-cancelar:hover {
+        background: #f5f5f5;
+      }
     </style>
-</head>
-<body>
-        <body>
-            <div class="container">
-                <!-- Logo de la empresa -->
-                <img src="https://pezglobocomanda.tiendawebuy.online/wp-content/uploads/2025/02/icono-del-sitio-pez-globo-300x300-1.png" alt="Logo de la Empresa" class="logo">
-        
-                <!-- Campos de nombre y teléfono -->
-                <div>
-                    <label for="nombreCliente">Nombre:</label>
-                    <input type="text" id="nombreCliente" class="campo-name" placeholder="Nombre del cliente">
-                </div>
-                <div>
-                    <label for="telefonoCliente">Teléfono:</label>
-                    <input type="text" id="telefonoCliente" class="campo-tel" placeholder="Teléfono del cliente">
-                </div>
-                <h2>Comentarios</h2>
-                <textarea id="comentarios" class="campo-comentarios" placeholder="Ej: Sin salmón, sin gluten, etc."></textarea>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="https://pocitos.pezglobo.com.uy/wp-content/uploads/2024/07/icono-del-sitio-pez-globo-300x300.png"
+          alt="Logo de la Empresa"
+          class="logo"
+        />
+        <h1>Generador de Comandas</h1>
+      </div>
 
-                
-                <h2>Seleccionar Productos</h2>
-                <select class="desplegable" id="productoSeleccionado"></select>
-                <input type="number" id="cantidad" class="campo-estilizado" placeholder="Cantidad" value="1" min="1">
-                <button onclick="agregarProducto()" class="boton">Agregar</button>
-        
-            </div>
+      <div class="form-group form-row">
+        <div class="form-col">
+          <label for="nombreCliente">Nombre del Cliente:</label>
+          <input
+            type="text"
+            id="nombreCliente"
+            class="campo-name"
+            placeholder="Ingrese el nombre"
+          />
+        </div>
+        <div class="form-col">
+          <label for="telefonoCliente">Teléfono:</label>
+          <input
+            type="text"
+            id="telefonoCliente"
+            class="campo-tel"
+            placeholder="Ingrese el teléfono"
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="comentarios">Comentarios/Especificaciones:</label>
+        <textarea
+          id="comentarios"
+          class="campo-comentarios"
+          placeholder="Ej: Sin gluten, sin lácteos, alergias, etc."
+        ></textarea>
+      </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Total</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="listaProductos"></tbody>
-        </table>
+      <h2>Agregar Productos</h2>
+      <div class="input-group">
+        <select class="desplegable" id="productoSeleccionado"></select>
+        <input
+          type="number"
+          id="cantidad"
+          class="campo-estilizado"
+          placeholder="Cant"
+          value="1"
+          min="1"
+        />
+        <button onclick="agregarProducto()" class="boton">Agregar</button>
+      </div>
 
-        <h3>Total: $<span class="total-a-pagar" id="total">0</span></h3>
+      <table>
+        <thead id="encabezadoProductos" style="display: none">
+          <tr>
+            <th>Producto</th>
+            <th>Precio Unit.</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="listaProductos"></tbody>
+      </table>
 
-        <h2>Opciones de Pago</h2>
-        <select class="desplegable" id="metodoPago">
+      <!-- Mostrar resumen de descuentos y envío debajo de la tabla -->
+      <div
+        class="resumen-totales"
+        id="resumenTotales"
+        style="display: none"
+      ></div>
+      <div class="total-section">Total: $<span id="total">0</span></div>
+
+      <h2>Configuración de Pedido</h2>
+      <div class="config-pedido-grid config-pedido-main">
+        <div class="form-group">
+          <label for="tipoEntrega">Tipo de Entrega:</label>
+          <select
+            class="desplegable"
+            id="tipoEntrega"
+            onchange="toggleDireccion()"
+          >
+            <option value="Retiro en el Local">Retiro en el Local</option>
+            <option value="Envio a domicilio">Envío a domicilio</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="metodoPago">Método de Pago:</label>
+          <select class="desplegable" id="metodoPago">
             <option value="Efectivo">Efectivo</option>
             <option value="Tarjeta">Tarjeta</option>
             <option value="Transferencia">Transferencia</option>
-        </select>
-
-        <h2>Entrega</h2>
-        <select class="desplegable" id="tipoEntrega" onchange="toggleDireccion()">
-            <option value="Retiro en el Local">Retiro en el Local</option>
-            <option value="Envio a domicilio">Envío a domicilio</option>
-        </select>
-        <input type="text" class="campo-direccion" id="direccion" placeholder="Dirección de envío" style="display:none;">
-        
-                <!-- Sección de costo de envío -->
-        <div id="seccionCostoEnvio" style="display: none;">
-            <h2>Costo de Envío </h2>
-            <select class="desplegable" id="costoEnvio" onchange="actualizarTotal()">
-                <option value="0">Seleccione un costo de envío</option>
-            </select>
-        </div>  
-
-        <h2>Descuento</h2>
-        <select class="desplegable" id="descuento">
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="descuento">Descuento:</label>
+          <select
+            class="desplegable"
+            id="descuento"
+            onchange="actualizarTotal()"
+          >
             <option value="0">Sin descuento</option>
             <option value="10">10%</option>
             <option value="15">15%</option>
+            <option value="20">20%</option>
             <option value="25">25%</option>
-            <option value="100">100%</option>
-        </select>
+          </select>
+        </div>
+      </div>
+      <div
+        id="seccionCostoEnvio"
+        style="display: none; max-width: 700px; margin-bottom: 10px"
+      >
+        <div class="form-group">
+          <label for="costoEnvio">Costo de Envío:</label>
+          <select
+            class="desplegable"
+            id="costoEnvio"
+            onchange="actualizarTotal()"
+          >
+            <option value="0">Seleccione un costo de envío</option>
+          </select>
+        </div>
+      </div>
+      <div id="seccionDireccion" style="display: none; max-width: 700px">
+        <div class="form-group">
+          <label for="direccion">Dirección de entrega:</label>
+          <input
+            type="text"
+            class="campo-direccion visible"
+            id="direccion"
+            placeholder="Dirección completa"
+          />
+        </div>
+      </div>
 
-        <button onclick="generarComanda()" class="boton">Generar Comanda</button>
+      <button
+        onclick="generarComanda()"
+        class="boton generar-comanda"
+        style="width: 100%; padding: 15px"
+      >
+        Generar Comanda
+      </button>
     </div>
 
     <div id="comanda">
-        <!-- Logo de la empresa en la comanda -->
-        <img src="https://pezglobocomanda.tiendawebuy.online/wp-content/uploads/2025/02/icono-del-sitio-pez-globo-60x60-1.png" alt="Logo de la Empresa" class="logo-comanda">
-    
-        <h2>Comanda</h2>
-        <!-- Mostrar nombre y teléfono -->
-        <p><strong>Nombre:</strong> <span id="comandaNombre"></span></p>
-        <p><strong>Teléfono:</strong> <span id="comandaTelefono"></span></p>
-        <p id="comandaComentarios" style="display:none;"><strong>Comentarios:</strong> <span id="comandaComentariosTexto">Sin contraindicaciones</span></p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Total</th>
-                    <th>Descuento</th>
-                </tr>
-            </thead>
-            <tbody id="detalleComanda"></tbody>
-        </table>
-        <h3>Total: $<span id="comandaTotal">0</span></h3>
+      <img
+        src="https://pocitos.pezglobo.com.uy/wp-content/uploads/2024/07/icono-del-sitio-pez-globo-300x300.png"
+        alt="Logo de la Empresa"
+        class="logo-comanda"
+      />
+      <h2 style="text-align: center">Comanda</h2>
 
-        <p><strong>Método de Pago:</strong> <span id="comandaPago"></span></p>
-        <p><strong>Entrega:</strong> <span id="comandaEntrega"></span></p>
-        <p id="comandaDireccion" style="display:none;"><strong>Dirección:</strong> <span id="comandaDireccionTexto"></span></p>
-        <div id="imprimirButtonContainer">
-            <button id="imprimirButton" class="boton" onclick="imprimirComanda()">Imprimir</button>
+      <p><strong>Fecha:</strong> <span id="comandaFecha"></span></p>
+      <p><strong>Cliente:</strong> <span id="comandaNombre"></span></p>
+      <p><strong>Teléfono:</strong> <span id="comandaTelefono"></span></p>
+      <p id="comandaComentarios">
+        <strong>Notas:</strong> <span id="comandaComentariosTexto">-</span>
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cant.</th>
+            <th>P.Unit.</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="detalleComanda"></tbody>
+      </table>
+
+      <div style="text-align: right; margin-top: 20px">
+        <p><strong>Subtotal:</strong> $<span id="comandaSubtotal">0</span></p>
+        <p id="comandaDescuentoLine" style="display: none">
+          <strong
+            >Descuento (<span id="comandaDescuentoPorc">0</span>%):</strong
+          >
+          -$<span id="comandaDescuento">0</span>
+        </p>
+        <p id="comandaEnvioLine" style="display: none">
+          <strong>Envío:</strong> $<span id="comandaEnvio">0</span>
+        </p>
+        <p style="font-size: 1.2em; font-weight: bold">
+          <strong>Total a pagar:</strong> $<span id="comandaTotal">0</span>
+        </p>
+      </div>
+
+      <div style="margin-top: 20px">
+        <p><strong>Método de pago:</strong> <span id="comandaPago"></span></p>
+        <p>
+          <strong>Tipo de entrega:</strong> <span id="comandaEntrega"></span>
+        </p>
+        <p id="comandaDireccionLine" style="display: none">
+          <strong>Dirección:</strong> <span id="comandaDireccionTexto"></span>
+        </p>
+      </div>
+
+      <div class="no-print" style="text-align: center; margin-top: 20px">
+        <button onclick="imprimirComanda()" class="boton">
+          Imprimir Comanda
+        </button>
+        <button
+          onclick="document.getElementById('comanda').style.display='none'"
+          class="boton"
+          style="background-color: #666; margin-left: 10px"
+        >
+          Volver
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal de confirmación personalizado -->
+    <div id="modalConfirm" class="modal-confirm-bg" style="display: none">
+      <div class="modal-confirm-box">
+        <p id="modalConfirmMsg">¿Eliminar este producto de la lista?</p>
+        <div class="modal-confirm-actions">
+          <button id="modalConfirmAceptar" class="boton">Aceptar</button>
+          <button id="modalConfirmCancelar" class="boton boton-cancelar">
+            Cancelar
+          </button>
         </div>
+      </div>
     </div>
 
     <script>
-        let productos = [];
-        async function cargarProductos() {
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL_3nMCPttSEaMYxs4DG9ew-HbBEw66LsD10Akk7biavBh4eP7Yshh7RrzsIqOX1NNxWLqBkLnmorp/pub?output=csv";
-    
-    try {
-        const response = await fetch(url);
-        const csvText = await response.text();
-        console.log("CSV Cargado:\n", csvText); // Verificar el contenido del CSV
-        const productos = csvToJson(csvText);
-        console.log("Productos Convertidos:", productos); // Verificar los productos en JSON
-        actualizarSelectorProductos(productos);
-    } catch (error) {
-        console.error("Error al cargar productos:", error);
-    }
-}
+      // Variables globales
+      let productos = [];
+      let costosEnvio = [];
 
-let costosEnvio = [];
+      // Cargar productos desde Google Sheets
+      async function cargarProductos() {
+        const url =
+          "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL_3nMCPttSEaMYxs4DG9ew-HbBEw66LsD10Akk7biavBh4eP7Yshh7RrzsIqOX1NNxWLqBkLnmorp/pub?output=csv";
 
-async function cargarCostosEnvio() {
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL_3nMCPttSEaMYxs4DG9ew-HbBEw66LsD10Akk7biavBh4eP7Yshh7RrzsIqOX1NNxWLqBkLnmorp/pub?gid=1174806520&single=true&output=csv"; // Cambia el gid al de tu hoja CostosEnvio
-
-    try {
-        const response = await fetch(url);
-        const csvText = await response.text();
-        const rows = csvText.split("\n").map(row => row.split(","));
-        const headers = rows.shift().map(header => header.trim());
-
-        costosEnvio = rows.map(row => {
-            let obj = {};
-            headers.forEach((header, index) => {
-                obj[header] = row[index] ? row[index].trim() : "";
-            });
-            return obj;
-        }).filter(obj => obj.nombre && obj.nombre !== "");
-
-        actualizarSelectorCostosEnvio();
-    } catch (error) {
-        console.error("Error al cargar costos de envío:", error);
-    }
-}
-
-function actualizarSelectorCostosEnvio() {
-    let select = document.getElementById("costoEnvio");
-    select.innerHTML = "<option value='0'>Seleccione un costo de envío</option>";
-
-    costosEnvio.forEach(costo => {
-        let option = document.createElement("option");
-        option.value = costo.precio;
-        option.text = `${costo.nombre} - $${costo.precio}`;
-        select.appendChild(option);
-    });
-}
-
-function csvToJson(csv) {
-    const rows = csv.split("\n").map(row => row.split(","));
-    const headers = rows.shift().map(header => header.trim());
-
-    return rows.map(row => {
-        let obj = {};
-        headers.forEach((header, index) => {
-            obj[header] = row[index] ? row[index].trim() : "";
-        });
-        return obj;
-    }).filter(obj => obj.nombre && obj.nombre !== "");
-}
-
-
-function actualizarSelectorProductos(productosDisponibles) {
-    let select = document.getElementById("productoSeleccionado");
-    select.innerHTML = "";
-
-    // Crear un objeto donde agruparemos los productos por categoría
-    let categorias = {};
-
-    productosDisponibles.forEach(p => {
-        let categoria = p.categoria || "Otros"; // Si no tiene categoría, se asigna "Otros"
-        let precioNumerico = parseFloat(p.precio.replace(",", "."));
-
-        if (!categorias[categoria]) {
-            categorias[categoria] = []; // Inicializa la categoría si no existe
+        try {
+          const response = await fetch(url);
+          const csvText = await response.text();
+          const productosData = csvToJson(csvText);
+          actualizarSelectorProductos(productosData);
+        } catch (error) {
+          console.error("Error al cargar productos:", error);
+          alert("Error al cargar los productos. Por favor recarga la página.");
         }
-        categorias[categoria].push({ nombre: p.nombre, precio: Math.floor(precioNumerico) });
-    });
+      }
 
-    // Crear los grupos de opciones dentro del select
-    Object.keys(categorias).forEach(categoria => {
-        let optgroup = document.createElement("optgroup");
-        optgroup.label = categoria;
+      // Cargar costos de envío
+      async function cargarCostosEnvio() {
+        const url =
+          "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL_3nMCPttSEaMYxs4DG9ew-HbBEw66LsD10Akk7biavBh4eP7Yshh7RrzsIqOX1NNxWLqBkLnmorp/pub?gid=1174806520&single=true&output=csv";
 
-        categorias[categoria].forEach(p => {
-            let option = document.createElement("option");
-            option.value = p.nombre;
-            option.text = `${p.nombre} - $${p.precio}`;
-            optgroup.appendChild(option);
+        try {
+          const response = await fetch(url);
+          const csvText = await response.text();
+          costosEnvio = csvToJson(csvText);
+          actualizarSelectorCostosEnvio();
+        } catch (error) {
+          console.error("Error al cargar costos de envío:", error);
+        }
+      }
+
+      // Convertir CSV a JSON
+      function csvToJson(csv) {
+        const lines = csv.split("\n");
+        const headers = lines[0].split(",").map((h) => h.trim());
+        return lines
+          .slice(1)
+          .map((line) => {
+            const values = line.split(",");
+            return headers.reduce((obj, header, i) => {
+              obj[header] = values[i] ? values[i].trim() : "";
+              return obj;
+            }, {});
+          })
+          .filter((item) => item.nombre);
+      }
+
+      // Actualizar selector de productos
+      function actualizarSelectorProductos(productosDisponibles) {
+        const select = document.getElementById("productoSeleccionado");
+        select.innerHTML = "";
+
+        // Agrupar por categoría
+        const categorias = {};
+        productosDisponibles.forEach((p) => {
+          const categoria = p.categoria || "Otros";
+          if (!categorias[categoria]) {
+            categorias[categoria] = [];
+          }
+          categorias[categoria].push({
+            nombre: p.nombre,
+            precio: parseFloat(p.precio.replace(",", ".")) || 0,
+          });
         });
 
-        select.appendChild(optgroup);
-    });
-}
+        // Crear optgroups
+        Object.keys(categorias).forEach((categoria) => {
+          const optgroup = document.createElement("optgroup");
+          optgroup.label = categoria;
 
+          categorias[categoria].forEach((p) => {
+            const option = document.createElement("option");
+            option.value = p.nombre;
+            option.textContent = `${p.nombre} - $${p.precio.toFixed(2)}`;
+            optgroup.appendChild(option);
+          });
 
-        
+          select.appendChild(optgroup);
+        });
+      }
 
-function agregarProducto() {
-    let select = document.getElementById("productoSeleccionado");
-    let cantidad = parseInt(document.getElementById("cantidad").value);
-    let nombre = select.value;
+      // Actualizar selector de costos de envío
+      function actualizarSelectorCostosEnvio() {
+        const select = document.getElementById("costoEnvio");
+        select.innerHTML =
+          '<option value="0">Seleccione un costo de envío</option>';
 
-    let precioTexto = select.options[select.selectedIndex].text.split('$')[1];
-    let precio = Math.floor(parseFloat(precioTexto.replace(',', '.'))); // Redondear hacia abajo
+        costosEnvio.forEach((costo) => {
+          const option = document.createElement("option");
+          option.value = costo.precio;
+          option.textContent = `${costo.nombre} - $${parseFloat(
+            costo.precio
+          ).toFixed(2)}`;
+          select.appendChild(option);
+        });
+      }
 
-    if (nombre && cantidad > 0 && !isNaN(precio)) {
-        // Buscar si el producto ya está en la lista
-        let productoExistente = productos.find(p => p.nombre === nombre);
+      // Agregar producto a la lista
+      function agregarProducto() {
+        const select = document.getElementById("productoSeleccionado");
+        const cantidadInput = document.getElementById("cantidad");
+        const cantidad = parseInt(cantidadInput.value);
+
+        if (!select.value || isNaN(cantidad)) {
+          alert("Por favor selecciona un producto y una cantidad válida");
+          return;
+        }
+
+        // Extraer precio del texto de la opción seleccionada
+        const precioMatch =
+          select.options[select.selectedIndex].text.match(/\$([\d.]+)/);
+        if (!precioMatch) {
+          alert("Error al obtener el precio del producto");
+          return;
+        }
+
+        const precio = parseFloat(precioMatch[1]);
+        const nombre = select.value;
+
+        // Buscar si ya existe
+        const productoExistente = productos.find((p) => p.nombre === nombre);
 
         if (productoExistente) {
-            // Si el producto ya existe, sumarle la cantidad
-            productoExistente.cantidad += cantidad;
+          productoExistente.cantidad += cantidad;
         } else {
-            // Si el producto no existe, agregarlo a la lista
-            productos.push({ nombre, precio, cantidad });
+          productos.push({ nombre, precio, cantidad });
         }
 
         mostrarProductos();
-    } else {
-        alert("Por favor, selecciona un producto válido y una cantidad mayor que cero.");
-    }
-}
+        cantidadInput.value = 1;
+      }
 
+      // Mostrar productos en la tabla
+      function mostrarProductos() {
+        const tbody = document.getElementById("listaProductos");
+        const thead = document.getElementById("encabezadoProductos");
+        tbody.innerHTML = productos
+          .map(
+            (producto, index) => `
+                <tr>
+                    <td>${producto.nombre}</td>
+                    <td>$${producto.precio.toFixed(2)}</td>
+                    <td>${producto.cantidad}</td>
+                    <td>$${(producto.precio * producto.cantidad).toFixed(
+                      2
+                    )}</td>
+                    <td class="acciones">
+                        <button onclick="cambiarCantidad(${index}, -1)" class="cambiar" title="Reducir">
+                            <span class="material-icons">remove</span>
+                        </button>
+                        <button onclick="eliminarProducto(${index})" class="eliminar" title="Eliminar">
+                            <span class="material-icons">delete</span>
+                        </button>
+                        <button onclick="cambiarCantidad(${index}, 1)" class="cambiar" title="Aumentar">
+                            <span class="material-icons">add</span>
+                        </button>
+                    </td>
+                </tr>
+            `
+          )
+          .join("");
+        // Mostrar encabezados solo si hay productos
+        thead.style.display =
+          productos.length > 0 ? "table-header-group" : "none";
+        actualizarTotal();
+      }
 
-function mostrarProductos() {
-    let lista = document.getElementById("listaProductos");
-    lista.innerHTML = productos.map((p, index) => {
-        let subtotal = p.precio * p.cantidad;
-        return `
-            <tr>
-                <td>${p.nombre}</td>
-                <td>$${Math.floor(p.precio)}</td> <!-- Redondear hacia abajo -->
-                <td>${p.cantidad}</td>
-                <td>$${Math.floor(subtotal)}</td> <!-- Redondear hacia abajo -->
-                <td>
-                    <button onclick="eliminarProducto(${index})" class="eliminar">
-                        <span class="material-icons">delete</span>
-                    </button>
-                    <button onclick="cambiarCantidad(${index}, -1)" class="cambiar">
-                        <span class="material-icons">remove</span>
-                    </button>
-                    <button onclick="cambiarCantidad(${index}, 1)" class="cambiar">
-                        <span class="material-icons">add</span>
-                    </button>
-                </td>
-            </tr>
-        `;
-    }).join("");
-
-    actualizarTotal();
-}
-
-
-function cambiarCantidad(index, cambio) {
-    if (productos[index].cantidad + cambio > 0) {
+      // Cambiar cantidad de un producto
+      function cambiarCantidad(index, cambio) {
         productos[index].cantidad += cambio;
-    } else {
-        productos.splice(index, 1); // Elimina el producto si la cantidad es 0
-    }
-    mostrarProductos();
-}
 
-// Nueva función para eliminar productos
-function eliminarProducto(index) {
-    productos.splice(index, 1);
-    mostrarProductos();
-}
-
-
-function actualizarTotal() {
-    let totalProductos = productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
-    let descuento = parseFloat(document.getElementById("descuento").value);
-    let totalDescuento = totalProductos * (descuento / 100);
-    let totalConDescuento = totalProductos - totalDescuento;
-
-    let costoEnvio = parseFloat(document.getElementById("costoEnvio").value) || 0;
-    let totalFinal = totalConDescuento + costoEnvio;
-
-    document.getElementById("total").innerText = Math.floor(totalFinal);
-}
-
-        function generarComanda() {
-    let comanda = document.getElementById("comanda");
-    let detalle = document.getElementById("detalleComanda");
-    detalle.innerHTML = "";
-
-    let totalProductos = productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
-    let descuento = parseFloat(document.getElementById("descuento").value);
-    let totalDescuento = totalProductos * (descuento / 100);
-    let totalConDescuento = totalProductos - totalDescuento;
-
-    let costoEnvio = parseFloat(document.getElementById("costoEnvio").value) || 0;
-    let totalFinal = totalConDescuento + costoEnvio;
-
-    productos.forEach(p => {
-        let subtotal = p.precio * p.cantidad;
-        let descuentoProducto = subtotal * (descuento / 100);
-
-        detalle.innerHTML += `
-            <tr>
-                <td>${p.nombre}</td>
-                <td>${p.cantidad}</td>
-                <td>$${Math.floor(subtotal)}</td>
-                <td class="descuento">-$${Math.floor(descuentoProducto)} (${descuento}%)</td>
-            </tr>
-        `;
-    });
-
-    if (costoEnvio > 0) {
-        detalle.innerHTML += `
-            <tr>
-                <td colspan="3">Costo de Envío</td>
-                <td>$${Math.floor(costoEnvio)}</td>
-            </tr>
-        `;
-    }
-
-    document.getElementById("comandaTotal").innerText = `${Math.floor(totalFinal)}`;
-
-    // Mostrar nombre y teléfono en la comanda
-    let nombreCliente = document.getElementById("nombreCliente").value;
-    let telefonoCliente = document.getElementById("telefonoCliente").value;
-    document.getElementById("comandaNombre").innerText = nombreCliente ? nombreCliente : "No especificado";
-    document.getElementById("comandaTelefono").innerText = telefonoCliente ? telefonoCliente : "No especificado";
-
-    document.getElementById("comandaPago").innerText = document.getElementById("metodoPago").value;
-    document.getElementById("comandaEntrega").innerText = document.getElementById("tipoEntrega").value;
-
-    // Mostrar comentarios en la comanda
-    let comentarios = document.getElementById("comentarios").value;
-    let comandaComentarios = document.getElementById("comandaComentarios");
-    let comandaComentariosTexto = document.getElementById("comandaComentariosTexto");
-
-    if (comentarios.trim() !== "") {
-        comandaComentariosTexto.innerText = comentarios;
-    } else {
-        comandaComentariosTexto.innerText = "Sin contraindicaciones";
-    }
-    comandaComentarios.style.display = "block";
-
-    let direccion = document.getElementById("direccion").value;
-    let comandaDireccion = document.getElementById("comandaDireccion");
-    let comandaDireccionTexto = document.getElementById("comandaDireccionTexto");
-
-    if (document.getElementById("tipoEntrega").value === "Envio a domicilio") {
-        comandaDireccion.style.display = "block";
-        comandaDireccionTexto.innerText = direccion ? direccion : "No especificada";
-    } else {
-        comandaDireccion.style.display = "none";
-    }
-
-    comanda.style.display = "block";
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    cargarProductos();
-    cargarCostosEnvio();
-});
-
-
-        function imprimirComanda() {
-            window.print();
+        if (productos[index].cantidad <= 0) {
+          productos.splice(index, 1);
         }
 
-        function toggleDireccion() {
-        let tipoEntrega = document.getElementById("tipoEntrega").value;
-        let direccion = document.getElementById("direccion");
-        let seccionCostoEnvio = document.getElementById("seccionCostoEnvio");
+        mostrarProductos();
+      }
 
-        if (tipoEntrega === "Envio a domicilio") {
-            direccion.style.display = "block"; // Muestra el campo de dirección
-            seccionCostoEnvio.style.display = "block"; // Muestra toda la sección de costo de envío
-        } else {
-            direccion.style.display = "none"; // Oculta el campo de dirección
-            seccionCostoEnvio.style.display = "none"; // Oculta toda la sección de costo de envío
-        }
-        }   
-
-        document.addEventListener("DOMContentLoaded", () => {
-            cargarProductos();
+      // Eliminar producto
+      function eliminarProducto(index) {
+        mostrarModalConfirmacion("¿Eliminar este producto de la lista?", () => {
+          productos.splice(index, 1);
+          mostrarProductos();
         });
+      }
+
+      function mostrarModalConfirmacion(mensaje, onConfirm) {
+        const modal = document.getElementById("modalConfirm");
+        const msg = document.getElementById("modalConfirmMsg");
+        const btnAceptar = document.getElementById("modalConfirmAceptar");
+        const btnCancelar = document.getElementById("modalConfirmCancelar");
+        msg.textContent = mensaje;
+        modal.style.display = "flex";
+        // Remover listeners previos
+        btnAceptar.onclick = null;
+        btnCancelar.onclick = null;
+        btnAceptar.onclick = function () {
+          modal.style.display = "none";
+          if (onConfirm) onConfirm();
+        };
+        btnCancelar.onclick = function () {
+          modal.style.display = "none";
+        };
+        // Cerrar con Escape
+        document.onkeydown = function (e) {
+          if (e.key === "Escape") {
+            modal.style.display = "none";
+            document.onkeydown = null;
+          }
+        };
+      }
+
+      // Actualizar total
+      function actualizarTotal() {
+        const subtotal = productos.reduce(
+          (sum, p) => sum + p.precio * p.cantidad,
+          0
+        );
+        const descuentoPorc =
+          parseFloat(document.getElementById("descuento").value) || 0;
+        const descuento = subtotal * (descuentoPorc / 100);
+        const costoEnvio =
+          parseFloat(document.getElementById("costoEnvio").value) || 0;
+        const total = subtotal - descuento + costoEnvio;
+
+        document.getElementById("total").textContent = total.toFixed(2);
+
+        // Mostrar desglose de totales
+        const resumen = [];
+        resumen.push(
+          `<p><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</p>`
+        );
+        if (descuentoPorc > 0) {
+          resumen.push(
+            `<p><strong>Descuento (${descuentoPorc}%):</strong> -$${descuento.toFixed(
+              2
+            )}</p>`
+          );
+        }
+        if (costoEnvio > 0) {
+          resumen.push(
+            `<p><strong>Envío:</strong> $${costoEnvio.toFixed(2)}</p>`
+          );
+        }
+        if (resumen.length > 1) {
+          document.getElementById("resumenTotales").innerHTML =
+            resumen.join("");
+          document.getElementById("resumenTotales").style.display = "flex";
+        } else {
+          document.getElementById("resumenTotales").style.display = "none";
+        }
+      }
+
+      // Generar comanda
+      function generarComanda() {
+        if (productos.length === 0) {
+          alert("Por favor agrega al menos un producto");
+          return;
+        }
+
+        const comanda = document.getElementById("comanda");
+        const fecha = new Date();
+
+        // Datos del cliente
+        document.getElementById("comandaNombre").textContent =
+          document.getElementById("nombreCliente").value || "No especificado";
+        document.getElementById("comandaTelefono").textContent =
+          document.getElementById("telefonoCliente").value || "No especificado";
+
+        // Comentarios
+        const comentarios = document.getElementById("comentarios").value.trim();
+        document.getElementById("comandaComentariosTexto").textContent =
+          comentarios || "Ninguna";
+
+        // Fecha
+        document.getElementById("comandaFecha").textContent =
+          fecha.toLocaleDateString() + " " + fecha.toLocaleTimeString();
+
+        // Productos
+        const tbody = document.getElementById("detalleComanda");
+        const subtotal = productos.reduce(
+          (sum, p) => sum + p.precio * p.cantidad,
+          0
+        );
+
+        tbody.innerHTML = productos
+          .map(
+            (p) => `
+                <tr>
+                    <td>${p.nombre}</td>
+                    <td>${p.cantidad}</td>
+                    <td>$${p.precio.toFixed(2)}</td>
+                    <td>$${(p.precio * p.cantidad).toFixed(2)}</td>
+                </tr>
+            `
+          )
+          .join("");
+
+        // Descuento
+        const descuentoPorc =
+          parseFloat(document.getElementById("descuento").value) || 0;
+        const descuento = subtotal * (descuentoPorc / 100);
+
+        if (descuentoPorc > 0) {
+          document.getElementById("comandaDescuentoLine").style.display =
+            "block";
+          document.getElementById("comandaDescuentoPorc").textContent =
+            descuentoPorc;
+          document.getElementById("comandaDescuento").textContent =
+            descuento.toFixed(2);
+        } else {
+          document.getElementById("comandaDescuentoLine").style.display =
+            "none";
+        }
+
+        // Envío
+        const costoEnvio =
+          parseFloat(document.getElementById("costoEnvio").value) || 0;
+        const tipoEntrega = document.getElementById("tipoEntrega").value;
+
+        if (tipoEntrega === "Envio a domicilio" && costoEnvio > 0) {
+          document.getElementById("comandaEnvioLine").style.display = "block";
+          document.getElementById("comandaEnvio").textContent =
+            costoEnvio.toFixed(2);
+        } else {
+          document.getElementById("comandaEnvioLine").style.display = "none";
+        }
+
+        // Totales
+        document.getElementById("comandaSubtotal").textContent =
+          subtotal.toFixed(2);
+        document.getElementById("comandaTotal").textContent = (
+          subtotal -
+          descuento +
+          costoEnvio
+        ).toFixed(2);
+
+        // Método de pago y entrega
+        document.getElementById("comandaPago").textContent =
+          document.getElementById("metodoPago").value;
+        document.getElementById("comandaEntrega").textContent = tipoEntrega;
+
+        // Dirección
+        const direccion = document.getElementById("direccion").value;
+        if (tipoEntrega === "Envio a domicilio" && direccion) {
+          document.getElementById("comandaDireccionLine").style.display =
+            "block";
+          document.getElementById("comandaDireccionTexto").textContent =
+            direccion;
+        } else {
+          document.getElementById("comandaDireccionLine").style.display =
+            "none";
+        }
+
+        // Mostrar comanda
+        comanda.style.display = "block";
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+
+      // Imprimir comanda
+      function imprimirComanda() {
+        window.print();
+      }
+
+      // Mostrar/ocultar dirección
+      function toggleDireccion() {
+        const tipoEntrega = document.getElementById("tipoEntrega").value;
+        const seccionEnvio = document.getElementById("seccionCostoEnvio");
+        const seccionDireccion = document.getElementById("seccionDireccion");
+        if (tipoEntrega === "Envio a domicilio") {
+          seccionEnvio.style.display = "block";
+          seccionDireccion.style.display = "block";
+        } else {
+          seccionEnvio.style.display = "none";
+          seccionDireccion.style.display = "none";
+          document.getElementById("costoEnvio").value = "0";
+          document.getElementById("direccion").value = "";
+          actualizarTotal();
+        }
+      }
+
+      // Inicializar
+      document.addEventListener("DOMContentLoaded", () => {
+        cargarProductos();
+        cargarCostosEnvio();
+
+        // Formatear automáticamente números
+        document
+          .getElementById("cantidad")
+          .addEventListener("change", function () {
+            if (this.value < 1) this.value = 1;
+          });
+      });
     </script>
-</body>
+  </body>
 </html>
